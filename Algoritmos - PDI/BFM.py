@@ -1,6 +1,6 @@
 def BFM(Grafo, salida):
     dist, prev = {}, {}
-    result = []
+    result = [salida, prev, dist]
 
     for vertice in Grafo:
         dist[vertice] = float("inf")
@@ -17,7 +17,7 @@ def BFM(Grafo, salida):
                 Q.append(vecino)
         Q.remove(Q[0])
     print(Q)
-    return result, dist, prev #ver que onda con result
+    return result
 
 grafo = {
     '1': {'3': 1, '6': 2},
@@ -32,9 +32,16 @@ grafo = {
     '11': {}
 }
 
+def main():
+    s = BFM(grafo, "1")
+    print("{:<14s} {:<10s} {:<10s} {:<10s}".format("Ruteador: "+ s[0],"Destino", "Next Hop", "Costo"))
+    for destino in s[1]:
+        if destino != s[0]:
+            if  s[1][destino] == s[0]:
+                nexthop = "directo"
+            else:
+                nexthop = s[1][destino]
+            print("{:<14s} {:<10s} {:<10s} {:<10s}".format("", destino, nexthop, str(s[1][destino])))
 
 
-s, distancia, previos = BFM(grafo, '1')
-print(f"{s=}")
-print(f"{distancia=}")
-print(f"{previos=}")
+main()
