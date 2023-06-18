@@ -1,52 +1,61 @@
-def re_analizar(u,Grafo, dist, prev):
-    for vecino in Grafo[u]:
-        if dist[vecino] > dist[u] + Grafo[u][vecino]:
-            dist[vecino] = dist[u] + Grafo[u][vecino]
-            prev[vecino] = u
-            re_analizar(vecino,Grafo,dist,prev)
-    return dist, prev
-def dijkstra(Grafo, salida):
-    dist, prev = {}, {}
-    result = []
-
-    for vertice in Grafo:
-        dist[vertice] = float("inf")
-        prev[vertice] = None
-    dist[salida] = 0
-
-    Q = [vertice for vertice in Grafo]
-
-    while Q:
-        u = min(Q, key=dist.get)
-        Q.remove(u)
-        result.append(u)
-
-        for vecino in Grafo[u]:
-            if vecino in Q and dist[vecino] > dist[u] + Grafo[u][vecino]:
-                dist[vecino] = dist[u] + Grafo[u][vecino]
-                prev[vecino] = u
-            elif vecino not in Q: #quiere decir que el nodo estaba
-                vecino = min(Grafo[u], key=dist.get)
-                dist[u]= dist[vecino] + Grafo[u][vecino]
-                prev[u] = vecino # si encontro una conexion al resto del grafo, me fijo si tiene mas conexiones y analizo si pasando por el mejora alguna
-                re_analizar(u, Grafo, dist, prev)
-    return result, dist, prev
-
-
 grafo = {
     '1': {'3': 1, '6': 2},
     '2': {'9': 1, '3': 2, '6': 1},
-    '3': {'4': 2},
-    '4': {'5': 3},
-    '5': {'10': 4},
-    '6': {'7': 2},
-    '7': {'9': 3, '11': 2},
-    '9': {'10': 2, '11': 2},
-    '10': {},
-    '11': {}
+    '3': {'4': 2, '2': 2, '1': 1},
+    '4': {'5': 3, '3': 2},
+    '5': {'10': 4, '4': 3},
+    '6': {'7': 2, '2': 1, '1': 2},
+    '7': {'9': 3, '11': 2, '6': 2},
+    '9': {'10': 2, '11': 2, '2': 1, '7': 3},
+    '10': {'5': 4, '9': 2},
+    '11': {'7': 2, '9': 2}
 }
+def dijkstra(grafo, salida):
+    dist, prev = {}, {}
+    for vertice in grafo:
+        dist[vertice] = float('inf')
+        prev[vertice] = None
+    dist[salida] = 0
 
-s, distancia, previos = dijkstra(grafo, '1')
-print(f"{s=}")
-print(f"{distancia=}")
-print(f"{previos=}")
+    visitado = []
+
+    while len(visitado) < len(grafo):
+        dist_min = float('inf')
+        nodo_min = None
+        for nodo in grafo:
+            if nodo not in visitado and dist[nodo] < dist_min:
+                dist_min = dist[nodo]
+                nodo_min = nodo
+
+        visitado.append(nodo_min)
+
+        for vecino, costo in grafo[nodo_min].items():
+            distancia = dist[nodo_min] + costo
+            if distancia < dist[vecino]:
+                dist[vecino] = distancia
+                prev[vecino] = nodo_min
+
+    return visitado, dist, prev
+
+def next_hop(previos, nodo, salida):
+    while previos[nodo] != salida:
+        nodo = previos[nodo]
+    return nodo
+
+def armarTabla():
+    for i in grafo:
+        print("{:<14} {:<10} {:<10} {:<10}".format("Ruteador: "+i,"Destino", "Distancia", "NextHop"))
+        usados, distancia, previos = dijkstra(grafo, i)
+        for nodo in distancia:
+            dis = distancia[nodo]
+            pre = previos[nodo]
+            if pre != None:
+                if pre!=i:
+                    nextHop = next_hop(previos, nodo, i)
+                    print("{:<14} {:<10} {:<10} {:<10}".format("",nodo, dis, nextHop))
+                else:
+                    print("{:<14} {:<10} {:<10} {:<10}".format("",nodo, dis, "Directo"))
+        print("_______________________________________________")
+def main():
+    armarTabla()
+main()

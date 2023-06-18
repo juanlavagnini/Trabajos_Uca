@@ -14,13 +14,18 @@ def BFM(Grafo, salida):
     Q = [salida]
 
     while Q:
-        for vecino in Grafo[Q[0]]:
-            if dist[vecino] > dist[Q[0]] + Grafo[Q[0]][vecino] and (Q[0]!=prev[vecino] and prev[Q[0]]!=vecino):
-                dist[vecino] = dist[Q[0]] + Grafo[Q[0]][vecino]
-                prev[vecino] = Q[0]
+        nodo_actual = Q[0]
+        for vecino in Grafo[nodo_actual]:
+            if dist[vecino] > dist[nodo_actual] + Grafo[nodo_actual][vecino] and (nodo_actual!=prev[vecino] and prev[nodo_actual]!=vecino):
+                dist[vecino] = dist[nodo_actual] + Grafo[nodo_actual][vecino]
+                previo = prev[vecino]
+                prev[vecino] = nodo_actual
                 if vecino not in Q:
-                    Q.append(vecino)
-        Q.remove(Q[0])
+                    if previo==None:
+                        Q.insert(0, vecino) 
+                    else:
+                        Q.append(vecino)
+        Q.remove(nodo_actual)
     return result
 
 
@@ -54,6 +59,4 @@ def main():
     tiempo = tiempo_final - inicio_de_tiempo
     print(tiempo)
 main()
-
-
 
