@@ -14,6 +14,7 @@ def on_connect(client, userdata, flags, rc):
     print("Conexión/código de resultado: "+str(rc))
     # Inicio o renovación de subscripción
     client.subscribe(topicolee,2)
+    # con el segundo parametro del subscribe se puede imponer la QoS -> siendo 2 "exactamente una vez"
 
 # el tópico tiene una publicación
 def on_message(client, userdata, msg):
