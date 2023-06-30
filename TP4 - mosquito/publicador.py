@@ -47,13 +47,13 @@ while True:
         humedad = generar_muestra_humedad()
 
         # Publicar la muestra de temperatura en el tópico
-        client.publish(topicT, temperatura)
+        client.publish(topicT, temperatura,2)
         print("Muestra de temperatura publicada: " + str(temperatura))
-        client.publish(topicP, presion)
+        client.publish(topicP, presion,2)
         print("Muestra de presion publicada: " + str(presion))
-        client.publish(topicH, humedad)
+        client.publish(topicH, humedad,2)
         print("Muestra de humedad publicada: " + str(humedad))
-
+        # el publicador tambien esta trabajndo con Qos = 2 , por lo que todo el proceso se hara en QoS 2 
         # Esperar un tiempo antes de generar la siguiente muestra
         time.sleep(1)
 
